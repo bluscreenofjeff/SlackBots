@@ -43,9 +43,9 @@ def post_ephemeral(message):
 def storytime(channelname):
 	with open(storyfile) as story:
 		for eachline in story:
-			eachline.replace("'",'\u0027')
 			sleep(random.randint(3,9))
-			command = '''curl -X POST --data-urlencode 'payload={"username": "''' + bot_username +'''", "icon_emoji": "''' + bot_emoji +'''", "channel": "'''+channelname+'''", "text": "'''+eachline.strip('\n').strip('\r')+'''"}' ''' + webhookURL
+			payload = '''{"username": "''' + bot_username +'''", "icon_emoji": "''' + bot_emoji +'''", "channel": "'''+channelname+'''", "text": "'''+eachline.strip('\n').strip('\r')+'''"}''' 
+			command = '''curl -X POST --data-urlencode payload=''' + dumps(payload) + ' ' + webhookURL
 			system(command)
 
 @app.route('/', method='POST')
@@ -73,8 +73,6 @@ def slack_post():
 		t = Thread(target=storytime, args=(channel_name,))
 		t.start()
 		return post_ephemeral("One story coming up!")
-		#return storytime(channel_name)
-
 
 if __name__ == '__main__':
 	while True:		
